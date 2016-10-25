@@ -35,7 +35,8 @@ place_bombs () {
 			do
 				if [[ ! ${rand_num} =~ ${BOMBS[@]} ]];then
 			       		BOMBS[$count]=$rand_num
-		               		let count=count+1	       
+		               		let count=count+1
+			 		break		
 				fi
 			done
 		fi
