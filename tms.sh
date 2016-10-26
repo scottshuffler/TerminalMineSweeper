@@ -97,7 +97,7 @@ do
     get_placement "$move"
     echo $second_char
     if [ -z "$second_char" ];then
-       return
+       echo "Should have entered a correct character"
     else
         recursion "$second_char"
     fi
