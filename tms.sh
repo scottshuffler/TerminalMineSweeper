@@ -48,21 +48,19 @@ get_placement () {
     echo $second_char
     if [ $second_char -lt 8 ] && [ $second_char -gt 0 ]; then
          
-        if [ $first_char == 'A' ];then
+        if [ $first_char == 'A' ] || [ $first_char == 'a' ] ;then
             first_char='-1'
-        elif [ $first_char == 'B' ];then
+        elif [ $first_char == 'B' ] || [ $first_char == 'b' ];then
             first_char='6'
-        elif [ $first_char == 'C' ];then
+        elif [ $first_char == 'C' ] || [ $first_char == 'c' ];then
             first_char='13'
-        
-        elif [ $first_char == 'D' ];then
+        elif [ $first_char == 'D' ] || [ $first_char == 'd' ];then
             first_char='20'
-        elif [ $first_char == 'E' ];then
+        elif [ $first_char == 'E' ] || [ $first_char == 'e' ];then
             first_char='27'
-        
-        elif [ $first_char == 'F' ];then
+        elif [ $first_char == 'F' ] || [ $first_char == 'f' ];then
             first_char='34'    
-        elif [ $first_char == 'G' ];then
+        elif [ $first_char == 'G' ] || [ $first_char == 'g' ];then
             first_char='41'
         else
             echo 'Invalid character. Please enter A-G'
