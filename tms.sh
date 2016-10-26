@@ -26,39 +26,15 @@ place_bombs () {
 		rand_num=$(( ( RANDOM % 48 )  + 1 ))
 
         if [ $count -eq 0 ];then
-            # echo "blank"
             GRID[$rand_num]=1
             let "count++"
-            # echo $rand_num
         else
-            # echo "not blank"
             if [ ${GRID[$rand_num]} -ne 1 ];then
                 GRID[$rand_num]=1
                 let "count++"
-                # echo $rand_num
             fi
         fi
-        #let "count++"
-		#if [ ${#BOMBS[@]} -eq 0 ];then
-        #    #echo "Empty list"
-		#	BOMBS[$count]=$rand_num
-		#	let count=count+1
-		#else
-			#echo "Not empty"
-		#	for i in "${BOMBS[@]}"
-		#	do
-		#		if [[ ! ${rand_num} =~ ${BOMBS[@]} ]];then
-		#	       	BOMBS[$count]=$rand_num
-		#            let count=count+1
-		#	 		break
-		#		fi
-		#	done
-		#fi
-		# BOMBS[$count]
-		# echo ${BOMBS[*]}
-		#let count=count+1
 	done
-    # echo ${GRID[@]}
 }
 
 init
