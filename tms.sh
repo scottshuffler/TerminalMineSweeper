@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 game_status=0
 declare -a GRID=(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
 
@@ -91,9 +91,12 @@ while [ $game_status -eq 0 ]
 do
 	echo -n " What is your move? (A1) "
 	read  move
-	echo $move
-    get_placement "$move"
-    echo $second_char
+    if  [[ "$move" =~ [a-gA-G]{1}[0-7]{1} ]];then
+        get_placement "$move"
+        echo $second_char
+    else
+        echo "Invalid command"
+    fi
     if [ -z "$second_char" ];then
        echo "Should have entered a correct character"
     else
