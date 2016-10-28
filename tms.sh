@@ -2,6 +2,12 @@
 game_status=0
 declare -a GRID=(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
 declare -a LETTERS=(a b c d e f g)
+declare -i board_size=7
+declare -i left_top_corner=0
+declare -i right_top_corner=$board_size-1
+declare -i left_bottom_corner=$right_top_corner*$board_size
+declare -i right_bottom_corner=$left_bottom_corner+$board_size-1
+
 init () {
 	clear
 	echo ""
@@ -16,6 +22,7 @@ init () {
 	echo " g | ? ? ? ? ? ? ? |"
 	echo "   -----------------"
 	echo ""
+	printf " %d %d \n" $left_bottom_corner $right_bottom_corner
 	place_bombs
 }
 draw_board () {
@@ -38,8 +45,6 @@ clear
     echo "   -----------------"
     echo ""
 }
-
-
 place_bombs () {
 	count=0
 	declare -a BOMBS
@@ -92,8 +97,6 @@ get_placement () {
     let second_char+=$first_char
 #second_char is set to final grid position.
     echo $second_char
-
-
 }
 recursion () {
     echo ${GRID[*]}
