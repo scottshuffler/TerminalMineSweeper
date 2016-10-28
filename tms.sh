@@ -126,8 +126,14 @@ recursion () {
 }
 #init
 draw_board
+bombs_not_placed=true
+
 while [ $game_status -eq 0 ]
 do
+    if [ $bombs_not_placed ];then
+        place_bombs
+        bombs_not_placed=false
+    fi
 	echo -n " What is your move? (A1) "
 	read  move
     if  [[ "$move" =~ [a-gA-G]{1}[0-7]{1} ]];then
