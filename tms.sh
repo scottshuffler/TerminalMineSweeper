@@ -30,9 +30,9 @@ clear
     echo ""
     echo "     1 2 3 4 5 6 7 "
     echo "   -----------------"
-    for ((i=0;i<7;i++))do
+    for ((i=0;i<$board_size;i++))do
         printf " %s | " ${LETTERS[i]}
-        for ((j=0;j<7;j++))do
+        for ((j=0;j<$board_size;j++))do
             item=${GRID[7*$i+$j]}
             if [ $item -eq 0 ] || [ $item -eq 1 ];then
                 printf "? "
