@@ -50,7 +50,7 @@ draw_board () {
             if [ $item -eq 0 ] || [ $item -eq 1 ];then
                 printf "? "
             else
-                printf "%d " $item
+                printf "${YELLOW}%d${NC} " $item
             fi
         done
         printf "${GREEN}|${NC} \n"
