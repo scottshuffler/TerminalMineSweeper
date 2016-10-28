@@ -26,10 +26,11 @@ clear
     for ((i=0;i<7;i++))do
         printf " %s | " ${LETTERS[i]}
         for ((j=0;j<7;j++))do
-            if [ ${GRID[7*$i+$j]} -eq 0 ] || [ ${GRID[7*$i+$j]} -eq 1 ];then
+            item=${GRID[7*$i+$j]}
+            if [ $item -eq 0 ] || [ $item -eq 1 ];then
                 printf "? "
             else
-                printf "%d " ${GRID[7*$i+$j]}
+                printf "%d " $item
             fi
         done
         printf "| \n"
@@ -100,6 +101,7 @@ recursion () {
     echo ${GRID[$1]}
     if [ ${GRID[$1]} -eq 1 ];then
         echo "get bombed son"
+        game_status=2
     else
         GRID[$1]=2
         echo "close one there, be careful you lunatic"
@@ -125,3 +127,9 @@ do
         #fi
 	#game_status=1
 done
+
+if [ $game_status -eq 2 ];then
+    echo "You lost"
+else
+    echo "You won"
+fi
