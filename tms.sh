@@ -22,21 +22,20 @@ declare -i left_bottom_corner=$right_top_corner*$board_size
 declare -i right_bottom_corner=$left_bottom_corner+$board_size-1
 
 init () {
-	clear
-	echo ""
-	echo "     1 2 3 4 5 6 7 "
-	echo "   -----------------"
-	echo " a | ? ? ? ? ? ? ? |"
-	echo " b | ? ? ? ? ? ? ? |"
-	echo " c | ? ? ? ? ? ? ? |"
-	echo " d | ? ? ? ? ? ? ? |"
-	echo " e | ? ? ? ? ? ? ? |"
-	echo " f | ? ? ? ? ? ? ? |"
-	echo " g | ? ? ? ? ? ? ? |"
-	echo "   -----------------"
-	echo ""
-	printf " %d %d \n" $left_bottom_corner $right_bottom_corner
-	place_bombs
+    clear
+    echo ""
+    printf "${RED}     1 2 3 4 5 6 7 ${NC}\n"
+    printf "${GREEN}   -----------------${NC}\n"
+    for ((i=0;i<$board_size;i++))do
+        printf "${RED} %s${NC} ${GREEN}|${NC} " ${LETTERS[i]}
+        for ((j=0;j<$board_size;j++))do
+                printf "? "
+        done
+        printf "${GREEN}|${NC} \n"
+    done
+    printf "${GREEN}   -----------------${NC}"
+    echo ""
+    place_bombs
 }
 draw_board () {
     clear
@@ -124,8 +123,8 @@ recursion () {
     fi
     draw_board
 }
-#init
-draw_board
+init
+#draw_board
 while [ $game_status -eq 0 ]
 do
 	echo -n " What is your move? (A1) "
