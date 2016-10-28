@@ -66,8 +66,7 @@ get_placement () {
     second_char="$(echo $1 | head -c 2 | tail -c 1)"
     echo $first_char
     echo $second_char
-    if [ $second_char -lt 8 ] && [ $second_char -gt 0 ]; then
-         
+    if [ $second_char -lt 8 ] && [ $second_char -gt 0 ]; then 
         if [ $first_char == 'a' ] ;then
             first_char='-1'
         elif [ $first_char == 'b' ];then
@@ -116,13 +115,13 @@ do
     if  [[ "$move" =~ [a-gA-G]{1}[0-7]{1} ]];then
         get_placement "$move"
         echo $second_char
+        recursion "$second_char"
     else
         echo "Invalid command"
     fi
-    if [ -z "$second_char" ];then
-       echo "Should have entered a correct character"
-    else
-        recursion "$second_char"
-    fi
+    #if [ -z "$second_char" ];then
+    #   echo "Should have entered a correct character"
+    #else
+        #fi
 	#game_status=1
 done
