@@ -1,23 +1,43 @@
 #!/bin/bash
 game_status=0
 declare -a GRID=(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
-
+declare -a LETTERS=(a b c d e f g)
 init () {
 	clear
 	echo ""
-	echo "    1 2 3 4 5 6 7 "
-	echo "   ---------------"
-	echo " a |? ? ? ? ? ? ?|"
-	echo " b |? ? ? ? ? ? ?|"
-	echo " c |? ? ? ? ? ? ?|"
-	echo " d |? ? ? ? ? ? ?|"
-	echo " e |? ? ? ? ? ? ?|"
-	echo " f |? ? ? ? ? ? ?|"
-	echo " g |? ? ? ? ? ? ?|"
-	echo "   ---------------"
+	echo "     1 2 3 4 5 6 7 "
+	echo "   -----------------"
+	echo " a | ? ? ? ? ? ? ? |"
+	echo " b | ? ? ? ? ? ? ? |"
+	echo " c | ? ? ? ? ? ? ? |"
+	echo " d | ? ? ? ? ? ? ? |"
+	echo " e | ? ? ? ? ? ? ? |"
+	echo " f | ? ? ? ? ? ? ? |"
+	echo " g | ? ? ? ? ? ? ? |"
+	echo "   -----------------"
 	echo ""
 	place_bombs
 }
+draw_board () {
+clear
+    echo ""
+    echo "     1 2 3 4 5 6 7 "
+    echo "   -----------------"
+    for ((i=0;i<7;i++))do
+        printf " %s | " ${LETTERS[i]}
+        for ((j=0;j<7;j++))do
+            if [ ${GRID[7*$i+$j]} -eq 0 ] || [ ${GRID[7*$i+$j]} -eq 1 ];then
+                printf "? "
+            else
+                printf "%d " ${GRID[7*$i+$j]}
+            fi
+        done
+        printf "| \n"
+    done
+    echo "   -----------------"
+    echo ""
+}
+
 
 place_bombs () {
 	count=0
@@ -82,8 +102,10 @@ recursion () {
     if [ ${GRID[$1]} -eq 1 ];then
         echo "get bombed son"
     else
+        GRID[$1]=2
         echo "close one there, be careful you lunatic"
     fi
+    draw_board
 }
 init
 
