@@ -1,23 +1,44 @@
-#! /bin/bash
+#!/bin/bash
 game_status=0
 declare -a GRID=(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
-
+declare -a LETTERS=(a b c d e f g)
 init () {
 	clear
 	echo ""
-	echo "    1 2 3 4 5 6 7 "
-	echo "   ---------------"
-	echo " a |? ? ? ? ? ? ?|"
-	echo " b |? ? ? ? ? ? ?|"
-	echo " c |? ? ? ? ? ? ?|"
-	echo " d |? ? ? ? ? ? ?|"
-	echo " e |? ? ? ? ? ? ?|"
-	echo " f |? ? ? ? ? ? ?|"
-	echo " g |? ? ? ? ? ? ?|"
-	echo "   ---------------"
+	echo "     1 2 3 4 5 6 7 "
+	echo "   -----------------"
+	echo " a | ? ? ? ? ? ? ? |"
+	echo " b | ? ? ? ? ? ? ? |"
+	echo " c | ? ? ? ? ? ? ? |"
+	echo " d | ? ? ? ? ? ? ? |"
+	echo " e | ? ? ? ? ? ? ? |"
+	echo " f | ? ? ? ? ? ? ? |"
+	echo " g | ? ? ? ? ? ? ? |"
+	echo "   -----------------"
 	echo ""
 	place_bombs
 }
+draw_board () {
+clear
+    echo ""
+    echo "     1 2 3 4 5 6 7 "
+    echo "   -----------------"
+    for ((i=0;i<7;i++))do
+        printf " %s | " ${LETTERS[i]}
+        for ((j=0;j<7;j++))do
+            item=${GRID[7*$i+$j]}
+            if [ $item -eq 0 ] || [ $item -eq 1 ];then
+                printf "? "
+            else
+                printf "%d " $item
+            fi
+        done
+        printf "| \n"
+    done
+    echo "   -----------------"
+    echo ""
+}
+
 
 place_bombs () {
 	count=0
@@ -42,25 +63,24 @@ get_placement () {
         echo 'nothing passed'
         return
     fi
-    first_char="$(echo $1 | head -c 1)"
+    first_char="$(echo $1 | head -c 1 | awk '{print tolower($0)}')"
     second_char="$(echo $1 | head -c 2 | tail -c 1)"
     echo $first_char
     echo $second_char
-    if [ $second_char -lt 8 ] && [ $second_char -gt 0 ]; then
-         
-        if [ $first_char == 'A' ] || [ $first_char == 'a' ] ;then
+    if [ $second_char -lt 8 ] && [ $second_char -gt 0 ]; then 
+        if [ $first_char == 'a' ] ;then
             first_char='-1'
-        elif [ $first_char == 'B' ] || [ $first_char == 'b' ];then
+        elif [ $first_char == 'b' ];then
             first_char='6'
-        elif [ $first_char == 'C' ] || [ $first_char == 'c' ];then
+        elif [ $first_char == 'c' ];then
             first_char='13'
-        elif [ $first_char == 'D' ] || [ $first_char == 'd' ];then
+        elif [ $first_char == 'd' ];then
             first_char='20'
-        elif [ $first_char == 'E' ] || [ $first_char == 'e' ];then
+        elif [ $first_char == 'e' ];then
             first_char='27'
-        elif [ $first_char == 'F' ] || [ $first_char == 'f' ];then
-            first_char='34'    
-        elif [ $first_char == 'G' ] || [ $first_char == 'g' ];then
+        elif [ $first_char == 'f' ];then
+            first_char='34'
+        elif [ $first_char == 'g' ];then
             first_char='41'
         else
             echo 'Invalid character. Please enter A-G'
@@ -72,7 +92,7 @@ get_placement () {
     let second_char+=$first_char
 #second_char is set to final grid position.
     echo $second_char
-   
+
 
 }
 recursion () {
@@ -81,9 +101,12 @@ recursion () {
     echo ${GRID[$1]}
     if [ ${GRID[$1]} -eq 1 ];then
         echo "get bombed son"
+        game_status=2
     else
+        GRID[$1]=2
         echo "close one there, be careful you lunatic"
     fi
+    draw_board
 }
 init
 
@@ -91,13 +114,22 @@ while [ $game_status -eq 0 ]
 do
 	echo -n " What is your move? (A1) "
 	read  move
-	echo $move
-    get_placement "$move"
-    echo $second_char
-    if [ -z "$second_char" ];then
-       echo "Should have entered a correct character"
-    else
+    if  [[ "$move" =~ [a-gA-G]{1}[0-7]{1} ]];then
+        get_placement "$move"
+        echo $second_char
         recursion "$second_char"
+    else
+        echo "Invalid command"
     fi
+    #if [ -z "$second_char" ];then
+    #   echo "Should have entered a correct character"
+    #else
+        #fi
 	#game_status=1
 done
+
+if [ $game_status -eq 2 ];then
+    echo "You lost"
+else
+    echo "You won"
+fi
