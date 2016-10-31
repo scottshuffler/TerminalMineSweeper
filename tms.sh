@@ -46,8 +46,10 @@ draw_board () {
         printf "${RED} %s${NC} ${GREEN}|${NC} " ${LETTERS[i]}
         for ((j=0;j<$board_size;j++))do
             item=${GRID[7*$i+$j]}
-            if [ $item -eq 0 ] || [ $item -eq 1 ];then
-                printf "? "
+            # printf "${YELLOW}%d${NC} " $item
+            if [ $item -eq -1 ];then
+                # printf "? "
+                printf "B "
             else
                 printf "${YELLOW}%d${NC} " $item
             fi
@@ -60,20 +62,90 @@ draw_board () {
 place_bombs () {
 	count=0
 	declare -a BOMBS
-	while [ $count -lt 7 ];
+	while [ $count -lt 2 ];
 	do
 		rand_num=$(( ( RANDOM % 48 )  + 1 ))
 
         if [ $count -eq 0 ];then
-            GRID[$rand_num]=1
+            GRID[$rand_num]=-1
             let "count++"
         else
-            if [ ${GRID[$rand_num]} -ne 1 ];then
-                GRID[$rand_num]=1
+            if [ ${GRID[$rand_num]} -ne -1 ];then
+                GRID[$rand_num]=-1
                 let "count++"
             fi
         fi
 	done
+    calculate_board
+}
+calculate_board () {
+    count=0
+    let "upper_edge_bound=0"
+    let "lower_edge_bound=$board_size*$board_size-1"
+
+    for ((i=0;i<$board_size;i++))do
+        let "left_edge=i*7"
+        let "right_edge=left_edge+6"
+
+        for ((j=0;j<$board_size;j++))do
+            item=${GRID[7*$i+$j]}
+            let "index=7*$i+$j"
+
+            if [ $item -eq -1 ];then
+                let "left=$index-1"
+                let "right=$index+1"
+                let "up=$index-7"
+                let "down=$index+7"
+
+                let "up_left_edge=$left_edge-7"
+                let "up_right_edge=$right_edge-7"
+                let "down_left_edge=$left_edge+7"
+                let "down_right_edge=$right_edge+7"
+
+                let "left_top_diag=$up-1"
+                let "right_top_diag=$up+1"
+                let "left_bottom_diag=$down-1"
+                let "right_bottom_diag=$down+1"
+
+                if [ $left -ge $left_edge ];then
+                    if [ ${GRID[$left]} -ne -1 ];then
+                        (( GRID[$left]++ ))
+                    fi
+                fi
+                if [ $right -le $right_edge ];then
+                    if [ ${GRID[$right]} -ne -1 ];then
+                        (( GRID[$right]++ ))
+                    fi
+                fi
+                if [ $up -ge $upper_edge_bound ];then
+                    if [ ${GRID[$up]} -ne -1 ];then
+                        (( GRID[$up]++ ))
+                    fi
+                    if [ $left -ge $left_edge ];then
+                        if [ ${GRID[$left_top_diag]} -ne -1 ];then
+                            (( GRID[$left_top_diag]++ ))
+                        fi
+                    fi
+                    if [ $right -le $right_edge ];then
+                        if [ ${GRID[$right_top_diag]} -ne -1 ];then
+                            (( GRID[$right_top_diag]++ ))
+                        fi
+                    fi
+                fi
+                if [ $down -le $lower_edge_bound ];then
+                    if [ ${GRID[$down]} -ne -1 ];then
+                        (( GRID[$down]++ ))
+                    fi
+                    if [ ${GRID[$left_bottom_diag]} -ne -1 ];then
+                        (( GRID[$left_bottom_diag]++ ))
+                    fi
+                    if [ ${GRID[$right_bottom_diag]} -ne -1 ];then
+                        (( GRID[$right_bottom_diag]++ ))
+                    fi
+                fi
+              fi
+        done
+    done
 }
 get_placement () {
     if [ -z "$1" ];then
@@ -118,7 +190,7 @@ recursion () {
         echo "get bombed son"
         game_status=2
     else
-        GRID[$1]=2
+        #GRID[$1]=2
         echo "close one there, be careful you lunatic"
     fi
     draw_board
