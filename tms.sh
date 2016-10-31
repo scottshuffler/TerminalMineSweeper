@@ -62,7 +62,7 @@ draw_board () {
 place_bombs () {
 	count=0
 	declare -a BOMBS
-	while [ $count -lt 2 ];
+	while [ $count -lt 7 ];
 	do
 		rand_num=$(( ( RANDOM % 48 )  + 1 ))
 
@@ -107,40 +107,52 @@ calculate_board () {
                 let "left_bottom_diag=$down-1"
                 let "right_bottom_diag=$down+1"
 
+                # Left checks
                 if [ $left -ge $left_edge ];then
                     if [ ${GRID[$left]} -ne -1 ];then
                         (( GRID[$left]++ ))
                     fi
                 fi
+                #Right checks
                 if [ $right -le $right_edge ];then
                     if [ ${GRID[$right]} -ne -1 ];then
                         (( GRID[$right]++ ))
                     fi
                 fi
+                # Up checks
                 if [ $up -ge $upper_edge_bound ];then
                     if [ ${GRID[$up]} -ne -1 ];then
                         (( GRID[$up]++ ))
-                    fi
-                    if [ $left -ge $left_edge ];then
-                        if [ ${GRID[$left_top_diag]} -ne -1 ];then
-                            (( GRID[$left_top_diag]++ ))
-                        fi
-                    fi
-                    if [ $right -le $right_edge ];then
-                        if [ ${GRID[$right_top_diag]} -ne -1 ];then
-                            (( GRID[$right_top_diag]++ ))
-                        fi
-                    fi
+                    fi 
                 fi
+                #Down checks
                 if [ $down -le $lower_edge_bound ];then
                     if [ ${GRID[$down]} -ne -1 ];then
                         (( GRID[$down]++ ))
                     fi
+                fi
+                #Down Left Diag check
+                if [ $left_bottom_diag -ge $down_left_edge ] && [ $left_bottom_diag -le $lower_edge_bound ];then
                     if [ ${GRID[$left_bottom_diag]} -ne -1 ];then
                         (( GRID[$left_bottom_diag]++ ))
                     fi
+                fi
+                #Down Right Diag check
+                if [ $right_bottom_diag -le $down_right_edge ] && [ $right_bottom_diag -le $lower_edge_bound ];then
                     if [ ${GRID[$right_bottom_diag]} -ne -1 ];then
                         (( GRID[$right_bottom_diag]++ ))
+                    fi
+                fi
+                #Top Left Diag check
+                if [ $left_top_diag -ge $up_left_edge ] && [ $left_top_diag -ge $upper_edge_bound ];then
+                    if [ ${GRID[$left_top_diag]} -ne -1 ];then
+                        (( GRID[$left_top_diag]++ ))
+                    fi
+                fi
+                #Top Right Diag check 
+                if [ $right_top_diag -le $up_right_edge ] && [ $right_top_diag -ge $upper_edge_bound ];then
+                    if [ ${GRID[$right_top_diag]} -ne -1 ];then
+                        (( GRID[$right_top_diag]++ ))
                     fi
                 fi
               fi
