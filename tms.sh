@@ -14,6 +14,8 @@ WHITE='\033[0;37m'        # White
 
 
 declare -a GRID=(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+declare -a VISIBLE=("f" "f" "f" "f" "f" "f" "f" "f" "f" "f" "f" "f" "f" "f" "f" "f" "f" "f" "f" "f" "f" "f" "f" "f" "f" "f" "f" "f" "f" "f" "f" "f" "f" "f" "f" "f" "f" "f" "f" "f" "f" "f" "f" "f" "f" "f" "f" "f" "f")
+
 declare -a LETTERS=(a b c d e f g)
 declare -i board_size=7
 declare -i left_top_corner=0
@@ -46,13 +48,19 @@ draw_board () {
         printf "${RED} %s${NC} ${GREEN}|${NC} " ${LETTERS[i]}
         for ((j=0;j<$board_size;j++))do
             item=${GRID[7*$i+$j]}
-            # printf "${YELLOW}%d${NC} " $item
-            if [ $item -eq -1 ];then
-                # printf "? "
-                printf "B "
-            else
+            let "place=7*$i+$j"
+            if [ ${VISIBLE[$place]} == "t" ];then
                 printf "${YELLOW}%d${NC} " $item
+            else
+                printf "? "
             fi
+            # printf "${YELLOW}%d${NC} " $item
+            # if [ $item -eq -1 ];then
+            #     # printf "? "
+            #     printf "B "
+            # else
+            #     printf "${YELLOW}%d${NC} " $item
+            # fi
         done
         printf "${GREEN}|${NC} \n"
     done
@@ -194,18 +202,23 @@ get_placement () {
 #second_char is set to final grid position.
     echo $second_char
 }
-recursion () {
-    echo ${GRID[*]}
-    echo ${#GRID[*]}
-    echo ${GRID[$1]}
-    if [ ${GRID[$1]} -eq 1 ];then
-        echo "get bombed son"
-        game_status=2
+reveal_zeros () {
+ echo ""
+}
+reveal_selection () {
+    if [ ${VISIBLE[$1]} == "f" ];then
+        if [ ${GRID[$1]} -eq -1 ];then
+            echo "get bombed son"
+            game_status=2
+        else
+            #GRID[$1]=2
+            echo "close one there, be careful you lunatic"
+        fi
+        VISIBLE[$1]="t"
+        draw_board
     else
-        #GRID[$1]=2
-        echo "close one there, be careful you lunatic"
+        echo "Please enter a different selection"
     fi
-    draw_board
 }
 init
 #draw_board
@@ -216,7 +229,7 @@ do
     if  [[ "$move" =~ [a-gA-G]{1}[0-7]{1} ]];then
         get_placement "$move"
         echo $second_char
-        recursion "$second_char"
+        reveal_selection "$second_char"
     else
         echo "Invalid command"
     fi
