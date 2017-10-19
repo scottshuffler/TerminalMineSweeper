@@ -203,8 +203,26 @@ get_placement () {
     echo $second_char
 }
 reveal_zeros () {
- echo ""
+
+    if [ ${GRID[$1]} -eq 0 ] && [ $1 -ge 0 ] && [ $1 -le 48 ] && [ ${VISIBLE[$1]} != "t" ];then
+        echo $1
+        VISIBLE[$1]="t"
+        reveal_zeros $(( $1 - 1 ))
+        reveal_zeros $(( $1 + 1 ))
+        reveal_zeros $(( $1 + 7 ))
+        reveal_zeros $(( $1 - 7 ))
+        reveal_zeros $(( $1 - 6 ))
+        reveal_zeros $(( $1 - 8 ))
+        reveal_zeros $(( $1 + 6 ))
+        reveal_zeros $(( $1 + 8 ))
+        echo $1
+    else
+        return
+    fi
 }
+
+
+
 reveal_selection () {
     if [ ${VISIBLE[$1]} == "f" ];then
         if [ ${GRID[$1]} -eq -1 ];then
@@ -212,6 +230,7 @@ reveal_selection () {
             game_status=2
         else
             #GRID[$1]=2
+            reveal_zeros $1
             echo "close one there, be careful you lunatic"
         fi
         VISIBLE[$1]="t"
